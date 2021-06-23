@@ -9,9 +9,18 @@ const User = require('../models/User');
 // Uma rota de exemplo simples aqui.
 // As rotas devem ficar em arquivos separados, /src/controllers/userController.js por exemplo
 class UserController {
-  index(ctx) {
-    ctx.status = 200;
-    ctx.body = { total: 0, count: 0, rows: [] };
+  async show(ctx) {
+    try {
+      const users = await User.findAll();
+      return (
+        ctx.body = users, ctx.status = 200
+      );
+    } catch (error) {
+      return (
+        ctx.status = 400,
+        ctx.body = { msg: 'Erro ao tentar listar usuarios' }
+      );
+    }
   }
 
   async store(ctx) {
