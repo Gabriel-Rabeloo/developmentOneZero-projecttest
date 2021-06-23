@@ -17,22 +17,43 @@ class UserController {
   async store(ctx) {
     try {
       let errors = false;
+      const msgError = [];
 
-      const { email, age } = ctx.request.body;
+      const { name, email, age } = ctx.request.body;
 
-      if (!isEmail(email)) {
+      if (!name) {
         errors = true;
-        ctx.body = { msg: 'E-mail inválido' };
+        msgError.push({ msg: 'Nome não foi enviado' });
       }
-
-      if (age < 18) {
+      if (!email) {
         errors = true;
-        ctx.body = { msg: 'Somente maiores de 18 anos podem se cadastrar' };
+        msgError.push({ msg: 'Email não foi enviado' });
+      } if (!age) {
+        errors = true;
+        msgError.push({ msg: 'Idade não foi enviada' });
       }
 
       if (errors) {
         return (
-          ctx.status = 401
+          ctx.status = 400,
+          ctx.body = msgError
+        );
+      }
+
+      if (!isEmail(email)) {
+        errors = true;
+        msgError.push({ msg: 'E-mail inválido' });
+      }
+
+      if (age < 18) {
+        errors = true;
+        msgError.push({ msg: 'Somente maiores de 18 anos podem se cadastrar' });
+      }
+
+      if (errors) {
+        return (
+          ctx.status = 400,
+          ctx.body = msgError
         );
       }
 
@@ -40,9 +61,15 @@ class UserController {
 
       const newUser = await User.create(ctx.request.body);
 
-      return ctx.body = newUser;
+      return (
+        ctx.body = newUser, ctx.status = 200
+      );
     } catch (error) {
-      return { msg: 'Erro ao criar usuario' };
+      return (
+        ctx.status = 400,
+        ctx.body = { msg: 'Erro ao criar usuario' }
+
+      );
     }
   }
 }
