@@ -7,22 +7,15 @@
 // todas as configurações devem ser passadas via environment variables
 
 const Koa = require('koa');
-const Router = require('koa-router');
 
 const koa = new Koa();
-const router = new Router();
 
 const homeRoutes = require('./routes/homeRoutes');
-// Uma rota de exemplo simples aqui.
-// As rotas devem ficar em arquivos separados, /src/controllers/userController.js por exemplo
-router.get('/users', async (ctx) => {
-  ctx.status = 200;
-  ctx.body = { total: 0, count: 0, rows: [] };
-});
+const userRoutes = require('./routes/userRoutes');
 
 koa
-  .use(router.routes())
   .use(homeRoutes.routes())
-  .use(router.allowedMethods());
+  .use(userRoutes.routes())
+  .use(homeRoutes.allowedMethods());
 
 module.exports = koa;
