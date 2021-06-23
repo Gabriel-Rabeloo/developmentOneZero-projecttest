@@ -7,15 +7,18 @@
 // todas as configurações devem ser passadas via environment variables
 
 const Koa = require('koa');
+const bodyparser = require('koa-bodyparser');
 
-const koa = new Koa();
+const app = new Koa();
+
+app.use(bodyparser());
 
 const homeRoutes = require('./routes/homeRoutes');
 const userRoutes = require('./routes/userRoutes');
 
-koa
+app
   .use(homeRoutes.routes())
   .use(userRoutes.routes())
   .use(homeRoutes.allowedMethods());
 
-module.exports = koa;
+module.exports = app;
