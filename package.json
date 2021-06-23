@@ -2,9 +2,9 @@
   "name": "projecttest",
   "version": "1.0.0",
   "description": "Project to test the hability of the coop to solve basic problems",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "SET NODE_ENV=dev && node src/index.js",
+    "dev": "SET NODE_ENV=dev && node src/server.js",
     "test": "mocha"
   },
   "repository": {

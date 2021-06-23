@@ -29,6 +29,4 @@ koa
   .use(router.routes())
   .use(router.allowedMethods());
 
-const server = koa.listen(PORT);
-
-module.exports = server;
+module.exports = koa;
