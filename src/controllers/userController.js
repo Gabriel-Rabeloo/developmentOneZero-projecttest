@@ -2,16 +2,15 @@ const { isEmail } = require('validator');
 
 const database = require('../database/index');
 const User = require('../models/User');
-// const dbConfig = require('../config/databaseConfig')
-
-// dbConfig();
 
 // Uma rota de exemplo simples aqui.
 // As rotas devem ficar em arquivos separados, /src/controllers/userController.js por exemplo
 class UserController {
   async show(ctx) {
     try {
-      const users = await User.findAll();
+      const users = await User.findAll({
+        attributes: ['id', 'name', 'email', 'age'],
+      });
       return (
         ctx.body = users, ctx.status = 200
       );

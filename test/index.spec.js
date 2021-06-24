@@ -12,6 +12,7 @@ const assert = require('assert');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const chaiJson = require('chai-json-schema');
+
 const app = require('../src/app');
 
 chai.use(chaiHttp);
@@ -57,6 +58,12 @@ describe('Testes da aplicaçao', () => {
         expect(res).to.have.status(200);
         done();
       });
+  });
+
+  it('o servidor esta online', (done) => {
+    const res = chai.request(app).get('/');
+
+    expect(res.body).to.haveOwnProperty('message');
   });
 
   it('deveria ser uma lista vazia de usuarios', (done) => {
