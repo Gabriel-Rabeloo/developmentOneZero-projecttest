@@ -48,7 +48,44 @@ class UserController {
     } catch (error) {
       return (
         ctx.status = 400,
-        ctx.body = { error, msg: 'Erro inesperado ao criar usuario' }
+        ctx.body = { msg: 'Erro inesperado ao criar usuario' }
+
+      );
+    }
+  }
+
+  async update(ctx) {
+    try {
+      const { name } = ctx.request.params;
+
+      if (!name) {
+        return (
+          ctx.status = 400,
+          ctx.body = { msg: 'Faltando o nome' }
+        );
+      }
+
+      await database.sync();
+
+      const user = await User.findOne({ where: { name } });
+
+      if (!user) {
+        return (
+          ctx.status = 400,
+          ctx.body = { msg: 'Usuario não existe' }
+        );
+      }
+
+      const updatedUser = await user.update(ctx.request.body);
+
+      return (
+        ctx.body = updatedUser,
+        ctx.status = 200
+      );
+    } catch (error) {
+      return (
+        ctx.status = 400,
+        ctx.body = { msg: 'Erro inesperado ao atualizar usuario' }
 
       );
     }

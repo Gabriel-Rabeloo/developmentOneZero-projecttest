@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 // sample test
 // Para rodar os testes, use: npm test
 // PS: Os testes não estão completos e alguns podem conter erros.
