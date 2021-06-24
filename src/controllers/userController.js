@@ -32,7 +32,7 @@ class UserController {
 
       await database.sync();
 
-      if (msgError.length > 1) {
+      if (msgError.length > 0) {
         return (
           ctx.status = 400,
           ctx.body = msgError
@@ -71,7 +71,7 @@ class UserController {
 
       await database.sync();
 
-      if (msgError.length > 1) {
+      if (msgError.length > 0) {
         return (
           ctx.status = 400,
           ctx.body = msgError
@@ -156,22 +156,24 @@ class UserController {
     }
 
     await database.sync();
-    let nameExists;
-    let emailExists;
-
+    let ExistEmail;
+    let ExistName;
     if (email) {
-      emailExists = await User.findOne({ where: { email } });
+      ExistEmail = await User.findOne({ where: { email } });
       if (!isEmail(email)) {
         msgError.push({ msg: 'E-mail inválido' });
       }
     }
-    if (name) { nameExists = await User.findOne({ where: { name } }); }
 
-    if (emailExists) {
-      msgError.push({ msg: 'E-mail já cadastrado no sistema' });
+    if (name) {
+      ExistName = await User.findOne({ where: { name } });
     }
-    if (nameExists) {
+
+    if (ExistName) {
       msgError.push({ msg: 'Usuario já cadastrado no sistema' });
+    }
+    if (ExistEmail) {
+      msgError.push({ msg: 'E-mail já cadastrado no sistema' });
     }
   }
 }
