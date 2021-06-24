@@ -13,5 +13,6 @@ module.exports = {
   rules: {
     'class-methods-use-this': 'off',
     'no-return-assign': 'off',
+    'no-plusplus': 'off',
   },
 };

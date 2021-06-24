@@ -16,8 +16,35 @@ class UserController {
       );
     } catch (error) {
       return (
-        ctx.status = 400,
+        ctx.status = 500,
         ctx.body = { msg: 'Erro ao tentar listar usuarios' }
+      );
+    }
+  }
+
+  async showOne(ctx) {
+    try {
+      const { name } = ctx.request.params;
+
+      const user = await User.findOne({ where: { name } });
+
+      if (!user) {
+        return (
+          ctx.status = 404,
+          ctx.body = { msg: 'User not found' }
+        );
+      }
+
+      delete user.dataValues.createdAt;
+      delete user.dataValues.updatedAt;
+
+      return (
+        ctx.body = user, ctx.status = 200
+      );
+    } catch (error) {
+      return (
+        ctx.status = 500,
+        ctx.body = { msg: 'Erro ao tentar listar usuario' }
       );
     }
   }
@@ -42,11 +69,11 @@ class UserController {
 
       return (
         ctx.body = newUser,
-        ctx.status = 200
+        ctx.status = 201
       );
     } catch (error) {
       return (
-        ctx.status = 400,
+        ctx.status = 500,
         ctx.body = { msg: 'Erro inesperado ao criar usuario' }
 
       );
@@ -81,7 +108,7 @@ class UserController {
 
       if (!user) {
         return (
-          ctx.status = 400,
+          ctx.status = 404,
           ctx.body = { msg: 'Usuario não existe' }
         );
       }
@@ -94,7 +121,7 @@ class UserController {
       );
     } catch (error) {
       return (
-        ctx.status = 400,
+        ctx.status = 500,
         ctx.body = { msg: 'Erro inesperado ao atualizar usuario' }
 
       );
@@ -118,12 +145,14 @@ class UserController {
 
       if (!user) {
         return (
-          ctx.status = 400,
-          ctx.body = { msg: 'Usuario não existe' }
+          ctx.status = 404,
+          ctx.body = { msg: 'User not found' }
         );
       }
 
       const deletedUser = await user.destroy(ctx.request.body);
+      delete deletedUser.dataValues.createdAt;
+      delete deletedUser.dataValues.updatedAt;
 
       return (
         ctx.body = deletedUser,
@@ -131,8 +160,26 @@ class UserController {
       );
     } catch (error) {
       return (
-        ctx.status = 400,
+        ctx.status = 500,
         ctx.body = { msg: 'Erro inesperado ao excluir usuario' }
+
+      );
+    }
+  }
+
+  async deleteAll(ctx) {
+    try {
+      await User.destroy({
+        truncate: true,
+      });
+      return (
+        ctx.status = 200,
+        ctx.body = { msg: 'Banco de dados limpo' }
+      );
+    } catch (error) {
+      return (
+        ctx.status = 500,
+        ctx.body = { msg: 'Erro ao limpar banco de dados' }
 
       );
     }
