@@ -91,6 +91,43 @@ class UserController {
     }
   }
 
+  async delete(ctx) {
+    try {
+      const { name } = ctx.request.params;
+
+      if (!name) {
+        return (
+          ctx.status = 400,
+          ctx.body = { msg: 'Faltando o nome' }
+        );
+      }
+
+      await database.sync();
+
+      const user = await User.findOne({ where: { name } });
+
+      if (!user) {
+        return (
+          ctx.status = 400,
+          ctx.body = { msg: 'Usuario não existe' }
+        );
+      }
+
+      const deletedUser = await user.destroy(ctx.request.body);
+
+      return (
+        ctx.body = deletedUser,
+        ctx.status = 200
+      );
+    } catch (error) {
+      return (
+        ctx.status = 400,
+        ctx.body = { msg: 'Erro inesperado ao excluir usuario' }
+
+      );
+    }
+  }
+
   static async validateUser(name, email, age, msgError) {
     if (!name) {
       msgError.push({ msg: 'Nome não foi enviado' });

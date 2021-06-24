@@ -6,5 +6,6 @@ const router = new Router();
 router.get('/users', userController.show);
 router.post('/user', userController.store);
 router.put('/user/:name', userController.update);
+router.delete('/user/:name', userController.delete);
 
 module.exports = router;
