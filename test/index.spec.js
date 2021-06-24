@@ -88,7 +88,40 @@ describe('Testes da aplicaçao', () => {
       });
   });
 
-  it('deveria criar o usuario Moraes', (done) => {
+  it('should try to create a user without sending the name', (done) => {
+    chai.request(app)
+      .post('/user')
+      .send({ email: 'test@email.com', age: 5 })
+      .end((err, res) => {
+        expect(err).to.be.null;
+        expect(res).to.have.status(400);
+        done();
+      });
+  });
+
+  it('should try to create a user without sending the email', (done) => {
+    chai.request(app)
+      .post('/user')
+      .send({ name: 'test', age: 5 })
+      .end((err, res) => {
+        expect(err).to.be.null;
+        expect(res).to.have.status(400);
+        done();
+      });
+  });
+
+  it('should try to create a user without sending the age', (done) => {
+    chai.request(app)
+      .post('/user')
+      .send({ name: 'test', email: 'test@email.com' })
+      .end((err, res) => {
+        expect(err).to.be.null;
+        expect(res).to.have.status(400);
+        done();
+      });
+  });
+
+  it('should create the user "Moraes"', (done) => {
     chai.request(app)
       .post('/user')
       .send({ name: 'Moraes', email: 'moraes@email.com', age: 35 })
@@ -99,7 +132,7 @@ describe('Testes da aplicaçao', () => {
       });
   });
 
-  it('deveria tentar criar o usuario Moraes', (done) => {
+  it('should try to create the user Moraes', (done) => {
     chai.request(app)
       .post('/user')
       .send({ name: 'Moraes', email: 'moraes@email.com', age: 50 })
@@ -110,11 +143,46 @@ describe('Testes da aplicaçao', () => {
       });
   });
 
-  it('o usuario naoExiste não existe no sistema', (done) => {
+  it('should try to update the email to an email that already exists in the system', (done) => {
+    chai.request(app)
+      .put('/user/raupp')
+      .send({ email: 'moraes@email.com' })
+      .end((err, res) => {
+        expect(err).to.be.null;
+        expect(res).to.have.status(400);
+        done();
+      });
+  });
+
+  it('should try to update the name to an name that already exists in the system', (done) => {
+    chai.request(app)
+      .put('/user/raupp')
+      .send({ name: 'Moraes' })
+      .end((err, res) => {
+        expect(err).to.be.null;
+        expect(res).to.have.status(400);
+        done();
+      });
+  });
+
+  it('should look for the "naoExiste" user in the system', (done) => {
     chai.request(app)
       .get('/user/naoExiste')
       .end((err, res) => {
-        expect(res.body.msg).to.be.equal('User not found'); // possivelmente forma errada de verificar a mensagem de erro
+        expect(err).to.be.null;
+        expect(res.body.msg).to.be.equal('User not found');
+        expect(res).to.have.status(404);
+        // expect(res.body).to.be.jsonSchema(userSchema);
+        done();
+      });
+  });
+
+  it('should delete "naoExiste" user in the system', (done) => {
+    chai.request(app)
+      .delete('/user/naoExiste')
+      .end((err, res) => {
+        expect(err).to.be.null;
+        expect(res.body.msg).to.be.equal('User not found');
         expect(res).to.have.status(404);
         // expect(res.body).to.be.jsonSchema(userSchema);
         done();
