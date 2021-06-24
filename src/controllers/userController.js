@@ -28,7 +28,7 @@ class UserController {
       const { name, email, age } = ctx.request.body;
       const msgError = [];
 
-      await UserController.validateUser(name, email, age, msgError);
+      await UserController.validateUser(name, email, age, msgError, true);
 
       await database.sync();
 
@@ -56,7 +56,9 @@ class UserController {
 
   async update(ctx) {
     try {
+      const msgError = [];
       const { name } = ctx.request.params;
+      const { name: nameBody, email, age } = ctx.request.body;
 
       if (!name) {
         return (
@@ -65,7 +67,16 @@ class UserController {
         );
       }
 
+      await UserController.validateUser(nameBody, email, age, msgError, false);
+
       await database.sync();
+
+      if (msgError.length > 1) {
+        return (
+          ctx.status = 400,
+          ctx.body = msgError
+        );
+      }
 
       const user = await User.findOne({ where: { name } });
 
@@ -128,18 +139,16 @@ class UserController {
     }
   }
 
-  static async validateUser(name, email, age, msgError) {
-    if (!name) {
-      msgError.push({ msg: 'Nome não foi enviado' });
-    }
-    if (!email) {
-      msgError.push({ msg: 'Email não foi enviado' });
-    } if (!age) {
-      msgError.push({ msg: 'Idade não foi enviada' });
-    }
-
-    if (!isEmail(email)) {
-      msgError.push({ msg: 'E-mail inválido' });
+  static async validateUser(name, email, age, msgError, store) {
+    if (store) {
+      if (!name) {
+        msgError.push({ msg: 'Nome não foi enviado' });
+      }
+      if (!email) {
+        msgError.push({ msg: 'Email não foi enviado' });
+      } if (!age) {
+        msgError.push({ msg: 'Idade não foi enviada' });
+      }
     }
 
     if (age < 18) {
@@ -147,9 +156,16 @@ class UserController {
     }
 
     await database.sync();
+    let nameExists;
+    let emailExists;
 
-    const emailExists = await User.findOne({ where: { email } });
-    const nameExists = await User.findOne({ where: { name } });
+    if (email) {
+      emailExists = await User.findOne({ where: { email } });
+      if (!isEmail(email)) {
+        msgError.push({ msg: 'E-mail inválido' });
+      }
+    }
+    if (name) { nameExists = await User.findOne({ where: { name } }); }
 
     if (emailExists) {
       msgError.push({ msg: 'E-mail já cadastrado no sistema' });
