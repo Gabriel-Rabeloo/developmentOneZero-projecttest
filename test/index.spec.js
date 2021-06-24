@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-expressions */
 // sample test
 // Para rodar os testes, use: npm test
 // PS: Os testes não estão completos e alguns podem conter erros.
@@ -64,7 +66,8 @@ describe('Testes da aplicaçao', () => {
       });
   });
 
-  // ...adicionar pelo menos mais 5 usuarios. se adicionar usuario menor de idade, deve dar erro. Ps: não criar o usuario naoExiste
+  /* ...adicionar pelo menos mais 5 usuarios.
+  se adicionar usuario menor de idade, deve dar erro. Ps: não criar o usuario naoExiste */
 
   it('deveria criar o usuario raupp', (done) => {
     chai.request(app)
@@ -165,9 +168,33 @@ describe('Testes da aplicaçao', () => {
       });
   });
 
+  it('should try to create the user Rabelo with an invalid email', (done) => {
+    chai.request(app)
+      .post('/user')
+      .send({ name: 'Rabelo', email: 'gabriel', age: 18 })
+      .end((err, res) => {
+        expect(err).to.be.null;
+        expect(res).to.have.status(400);
+        done();
+      });
+  });
+
   it('should look for the "naoExiste" user in the system', (done) => {
     chai.request(app)
       .get('/user/naoExiste')
+      .end((err, res) => {
+        expect(err).to.be.null;
+        expect(res.body.msg).to.be.equal('User not found');
+        expect(res).to.have.status(404);
+        // expect(res.body).to.be.jsonSchema(userSchema);
+        done();
+      });
+  });
+
+  it('should try to update "naoExiste" user in the system', (done) => {
+    chai.request(app)
+      .put('/user/naoExiste')
+      .send({ name: 'Nome' })
       .end((err, res) => {
         expect(err).to.be.null;
         expect(res.body.msg).to.be.equal('User not found');
@@ -192,6 +219,18 @@ describe('Testes da aplicaçao', () => {
   it('o usuario raupp existe e é valido', (done) => {
     chai.request(app)
       .get('/user/raupp')
+      .end((err, res) => {
+        expect(err).to.be.null;
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.jsonSchema(userSchema);
+        done();
+      });
+  });
+
+  it('should update raupp', (done) => {
+    chai.request(app)
+      .put('/user/raupp')
+      .send({ age: 25 })
       .end((err, res) => {
         expect(err).to.be.null;
         expect(res).to.have.status(200);

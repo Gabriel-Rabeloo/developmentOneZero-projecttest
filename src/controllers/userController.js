@@ -112,7 +112,7 @@ class UserController {
       if (!user) {
         return (
           ctx.status = 404,
-          ctx.body = { msg: 'Usuario não existe' }
+          ctx.body = { msg: 'User not found' }
         );
       }
 
