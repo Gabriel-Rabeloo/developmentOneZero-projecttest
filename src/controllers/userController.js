@@ -8,8 +8,11 @@ const User = require('../models/User');
 class UserController {
   async show(ctx) {
     try {
+      const { page, tableRows } = ctx.request.body;
       const users = await User.findAll({
         attributes: ['id', 'name', 'email', 'age'],
+        offset: page || 1,
+        limit: tableRows || 5,
       });
       return (
         ctx.body = users, ctx.status = 200
