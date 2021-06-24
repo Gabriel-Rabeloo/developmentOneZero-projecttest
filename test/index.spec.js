@@ -177,7 +177,7 @@ describe('Testes da aplicaçao', () => {
       });
   });
 
-  it('should delete "naoExiste" user in the system', (done) => {
+  it('should try to delete "naoExiste" user in the system', (done) => {
     chai.request(app)
       .delete('/user/naoExiste')
       .end((err, res) => {
