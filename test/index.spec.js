@@ -275,4 +275,34 @@ describe('Testes da aplicaçao', () => {
         });
     });
   });
+
+  it('should be a list with 3 users', (done) => {
+    chai.request(app)
+      .get('/users')
+      .send({
+        page: 1,
+        pageSize: 3,
+      })
+      .end((err, res) => {
+        expect(err).to.be.null;
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.lengthOf(3);
+        done();
+      });
+  });
+
+  it('should be a list with 1 user', (done) => {
+    chai.request(app)
+      .get('/users')
+      .send({
+        page: 2,
+        pageSize: 2,
+      })
+      .end((err, res) => {
+        expect(err).to.be.null;
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.lengthOf(1);
+        done();
+      });
+  });
 });
