@@ -296,7 +296,7 @@ describe('Testes da aplicaçao', () => {
       .get('/users')
       .send({
         page: 2,
-        pageSize: 2,
+        pageSize: 1,
       })
       .end((err, res) => {
         expect(err).to.be.null;
